@@ -5,7 +5,7 @@
 namespace Ems.Api.Feature.Employees;
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")]
+[Route("api/v1/employees")]
 [ApiController]
 public class EmployeesController : ControllerBase
 {
