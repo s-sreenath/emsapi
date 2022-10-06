@@ -1,3 +1,7 @@
+// <copyright file="WeatherForecast.cs" company="EmsApi Company">
+// Copyright (c) EmsApi Company. All rights reserved.
+// </copyright>
+
 namespace Ems.Api;
 
 public class WeatherForecast

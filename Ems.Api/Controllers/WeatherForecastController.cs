@@ -1,6 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+// <copyright file="WeatherForecastController.cs" company="EmsApi Company">
+// Copyright (c) EmsApi Company. All rights reserved.
+// </copyright>
 
 namespace Ems.Api.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
