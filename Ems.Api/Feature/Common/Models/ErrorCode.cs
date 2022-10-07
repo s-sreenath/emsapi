@@ -12,7 +12,7 @@ namespace Ems.Api.Feature.Common.Models
         EmployeeFirstNameIsRequired = 1000,
 
         /// <summary>
-        /// Employee first name length is greated than max limit.
+        /// Employee first name length is greater than max limit.
         /// </summary>
         EmployeeFirstNameExceedsMaxLength = 1001,
 
@@ -22,13 +22,23 @@ namespace Ems.Api.Feature.Common.Models
         EmployeeLastNameIsRequired = 1002,
 
         /// <summary>
-        /// Employee last name length is greated than max limit.
+        /// Employee last name length is greater than max limit.
         /// </summary>
         EmployeeLastNameExceedsMaxLength = 1003,
 
         /// <summary>
-        /// Employee age is required and should be greated than zero.
+        /// Employee age is required and should be greater than zero.
         /// </summary>
         EmployeeAgeIsRequiredAndShouldBeGreaterThanZero = 1004,
+
+        /// <summary>
+        /// Employee email is required.
+        /// </summary>
+        EmployeeEmailIsRequired = 1005,
+
+        /// <summary>
+        /// Employee email length is greater than max limit.
+        /// </summary>
+        EmployeeEmailExceedsMaxLength = 1006,
     }
 }

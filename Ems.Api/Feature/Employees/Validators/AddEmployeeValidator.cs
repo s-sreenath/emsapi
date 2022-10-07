@@ -20,6 +20,34 @@ public class AddEmployeeValidator
 
     public void Validate(Employee employee)
     {
+        this.ValidateFirstName(employee);
+        this.ValidateLastName(employee);
+        this.ValidatrAge(employee);
+
+        if (string.IsNullOrEmpty(employee.Email))
+        {
+            this.Errors.Add(new ErrorDetail()
+            {
+                ErrorCode = ErrorCode.EmployeeEmailIsRequired.ToString("D"),
+                ErrorCategory = ErrorCategory.Error.ToString(),
+                ErrorElement = nameof(employee.Email),
+            });
+        }
+
+        if (employee.Email.Length > 50)
+        {
+            this.Errors.Add(new ErrorDetail()
+            {
+                ErrorCode = ErrorCode.EmployeeEmailExceedsMaxLength.ToString("D"),
+                ErrorCategory = ErrorCategory.Error.ToString(),
+                ElementValue = employee.Email,
+                ErrorElement = nameof(employee.Email),
+            });
+        }
+    }
+
+    private void ValidateFirstName(Employee employee)
+    {
         if (string.IsNullOrEmpty(employee.FirstName))
         {
             this.Errors.Add(new ErrorDetail()
@@ -40,7 +68,10 @@ public class AddEmployeeValidator
                 ErrorElement = nameof(employee.FirstName),
             });
         }
+    }
 
+    private void ValidateLastName(Employee employee)
+    {
         if (string.IsNullOrEmpty(employee.LastName))
         {
             this.Errors.Add(new ErrorDetail()
@@ -61,8 +92,11 @@ public class AddEmployeeValidator
                 ErrorElement = nameof(employee.LastName),
             });
         }
+    }
 
-        if (employee.Age == 0)
+    private void ValidatrAge(Employee employee)
+    {
+        if (employee.Age <= 0)
         {
             this.Errors.Add(new ErrorDetail()
             {

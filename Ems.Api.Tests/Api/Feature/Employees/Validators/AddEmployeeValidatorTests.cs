@@ -133,7 +133,9 @@ public class AddEmployeeValidatorTests
     }
 
     [TestMethod]
-    public void Should_Return_IsValid_False_When_Age_Is_Zero()
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void Should_Return_IsValid_False_When_Age_Is_Invalid(int age)
     {
         // Arrange
         var employee = new Employee()
@@ -141,6 +143,7 @@ public class AddEmployeeValidatorTests
             FirstName = "FirstName",
             LastName = "LastName",
             Email = "Email@email.com",
+            Age = age,
         };
 
         // Act
@@ -152,5 +155,49 @@ public class AddEmployeeValidatorTests
         e.ErrorCategory == ErrorCategory.Error.ToString() &&
         e.ErrorElement == "Age" &&
         e.ElementValue == employee.Age.ToString()).ShouldBeTrue();
+    }
+
+    [TestMethod]
+    public void Should_Return_IsValid_False_When_Email_Is_Empty()
+    {
+        // Arrange
+        var employee = new Employee()
+        {
+            FirstName = "FirstName",
+            Age = 10,
+            LastName = "lastName",
+        };
+
+        // Act
+        this.validator.Validate(employee);
+
+        // Assert
+        this.validator.IsValid.ShouldBeFalse();
+        this.validator.Errors.Any(e => e.ErrorCode == ErrorCode.EmployeeEmailIsRequired.ToString("D") &&
+        e.ErrorCategory == ErrorCategory.Error.ToString() &&
+        e.ErrorElement == "Email").ShouldBeTrue();
+    }
+
+    [TestMethod]
+    public void Should_Return_IsValid_False_When_Email_Length_Exceeds_Limit()
+    {
+        // Arrange
+        var employee = new Employee()
+        {
+            FirstName = "FirstName",
+            Age = 10,
+            LastName = "lastName",
+            Email = new string('q', 51) + "@email.com",
+        };
+
+        // Act
+        this.validator.Validate(employee);
+
+        // Assert
+        this.validator.IsValid.ShouldBeFalse();
+        this.validator.Errors.Any(e => e.ErrorCode == ErrorCode.EmployeeEmailExceedsMaxLength.ToString("D") &&
+        e.ErrorCategory == ErrorCategory.Error.ToString() &&
+        e.ErrorElement == "Email" &&
+        e.ElementValue == employee.Email).ShouldBeTrue();
     }
 }
