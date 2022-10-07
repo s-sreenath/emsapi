@@ -9,10 +9,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	  <!--Suppressing 8618 (Nullable) - to allow test projects for running tests-->
+    <NoWarn>1701;1702;8618</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	  <!--Suppressing 8618 (Nullable) - to allow test projects for running tests-->
+    <NoWarn>1701;1702;8618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

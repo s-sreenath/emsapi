@@ -2,15 +2,10 @@
 // Copyright (c) EmsApi Company. All rights reserved.
 // </copyright>
 
-namespace Ems.Api.Tests.Feature.Employees;
+namespace Ems.Api.Tests.Api.Feature.Employees;
 
 using Ems.Api.Feature.Employees;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public class EmployeesControllerTests
 {
@@ -25,6 +20,5 @@ public class EmployeesControllerTests
     [TestMethod]
     public void AddEmployee_Should_Return()
     {
-
     }
 }

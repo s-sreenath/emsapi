@@ -2,7 +2,7 @@
 // Copyright (c) EmsApi Company. All rights reserved.
 // </copyright>
 
-namespace Ems.Api.Feature.Employees.Model
+namespace Ems.Api.Feature.Employees.Models
 {
     public class Employee
     {

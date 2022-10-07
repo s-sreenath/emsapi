@@ -2,9 +2,9 @@
 // Copyright (c) EmsApi Company. All rights reserved.
 // </copyright>
 
-namespace Ems.Api.Tests.Feature.Employees.Models;
+namespace Ems.Api.Tests.Api.Feature.Employees.Models;
 
-using Ems.Api.Feature.Employees.Model;
+using Ems.Api.Feature.Employees.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System.Text.Json;
@@ -38,6 +38,7 @@ public class EmployeeTests
     [TestMethod]
     public void Should_Serialize()
     {
+        // Arrange
         var firstName = "firstName";
         var lastName = "lastName";
         var email = "email@email.com";
@@ -61,6 +62,7 @@ public class EmployeeTests
     [TestMethod]
     public void Should_Deserialize()
     {
+        // Arrange
         var firstName = "firstName";
         var lastName = "lastName";
         var email = "email@email.com";
