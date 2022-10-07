@@ -3,9 +3,12 @@
 // </copyright>
 
 using System.Reflection;
+using Ems.Api.Data;
+using Ems.Api.Data.Repository;
 using Ems.Api.Feature.Employees.Validators;
 using Ems.Api.Feature.Employees.Validators.Interfaces;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 internal class Program
 {
@@ -14,10 +17,13 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+
+        // builder.Services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
         builder.Services.AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
         builder.Services.AddTransient<IAddEmployeeValidator, AddEmployeeValidator>();
+        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

@@ -8,10 +8,15 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Ems.Api.Data.DTO;
+    using Ems.Api.Data.Repository;
     using Ems.Api.Feature.Employees.Commands;
     using Ems.Api.Feature.Employees.Handlers;
+    using Ems.Api.Feature.Employees.Models;
     using Ems.Api.Feature.Employees.Models.Response;
+    using FakeItEasy;
     using MediatR;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Shouldly;
@@ -19,12 +24,16 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     [TestClass]
     public class AddEmployeeCommandHandlerTests
     {
+        private IEmployeeRepository repository;
         private AddEmployeeCommandHandler handler;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            this.handler = new AddEmployeeCommandHandler();
+            this.repository = A.Fake<IEmployeeRepository>();
+
+            this.handler = new AddEmployeeCommandHandler(
+                this.repository);
         }
 
         [TestMethod]
@@ -32,6 +41,28 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
         {
             // Assert
             this.handler.ShouldBeAssignableTo<IRequestHandler<AddEmployeeCommand, AddEmployeeResponse>>();
+        }
+
+        [TestMethod]
+        public async Task Handler_Should_Call_AddEmployee()
+        {
+            // Arrange
+            var employee = new Employee
+            {
+                FirstName = "firstName",
+                LastName = "lastName",
+                Email = "email@email.com",
+                Age = 12,
+            };
+
+            var command = new AddEmployeeCommand(employee);
+
+            // Act
+            var result = await this.handler.Handle(command, CancellationToken.None).ConfigureAwait(true);
+
+            // Assert
+            result.ShouldNotBeNull();
+            A.CallTo(() => this.repository.AddEmployee(A<EmployeeDto>._)).MustHaveHappened();
         }
     }
 }
