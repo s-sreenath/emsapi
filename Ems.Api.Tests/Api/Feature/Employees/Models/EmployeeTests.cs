@@ -22,11 +22,13 @@ public class EmployeeTests
         var age = 12;
 
         // Act
-        var employee = new Employee();
-        employee.FirstName = firstName;
-        employee.LastName = lastName;
-        employee.Email = email;
-        employee.Age = age;
+        var employee = new Employee
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Age = age,
+        };
 
         // Assert
         employee.FirstName.ShouldBe(firstName);
@@ -44,11 +46,13 @@ public class EmployeeTests
         var email = "email@email.com";
         var age = 12;
 
-        var employee = new Employee();
-        employee.FirstName = firstName;
-        employee.LastName = lastName;
-        employee.Email = email;
-        employee.Age = age;
+        var employee = new Employee
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Age = age,
+        };
 
         var expectedJson = "{\"FirstName\":\"firstName\",\"LastName\":\"lastName\",\"Email\":\"email@email.com\",\"Age\":12}";
 
