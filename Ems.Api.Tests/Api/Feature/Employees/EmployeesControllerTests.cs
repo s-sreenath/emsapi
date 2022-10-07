@@ -4,6 +4,7 @@
 
 namespace Ems.Api.Tests.Api.Feature.Employees;
 
+using Ems.Api.Feature.Common.Models;
 using Ems.Api.Feature.Employees;
 using Ems.Api.Feature.Employees.Models;
 using Ems.Api.Feature.Employees.Validators.Interfaces;
@@ -11,6 +12,7 @@ using FakeItEasy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 [TestClass]
@@ -32,16 +34,39 @@ public class EmployeesControllerTests
     {
         // Arrange
         var employee = new Employee();
+        List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
+        {
+            new ErrorDetail()
+            {
+                ErrorCode = "ErrorCode",
+                ElementValue = "ElementValue",
+                ErrorCategory = "ErrorCategory",
+                ErrorDescription = "ErrorDescription",
+                ErrorElement = "ErrorElement",
+            },
+        };
 
         A.CallTo(() => this.addEmployeeValidator.IsValid).Returns(false);
+        A.CallTo(() => this.addEmployeeValidator.Errors).Returns(expectedErrorList);
 
         // Act
         var result = await this.controller.AddEmployeeAsync(employee).ConfigureAwait(true);
         var badRequestObjectResult = result.Result as BadRequestObjectResult;
+        var errorList = badRequestObjectResult?.Value as List<ErrorDetail>;
 
         // Assert
         result.ShouldNotBeNull();
         badRequestObjectResult.ShouldNotBeNull();
+
         A.CallTo(() => this.addEmployeeValidator.Validate(employee)).MustHaveHappened();
+
+        errorList.ShouldNotBeNull();
+        errorList.Count.ShouldBe(1);
+        errorList[0].ShouldNotBeNull();
+        errorList[0].ErrorCode.ShouldBe(expectedErrorList[0].ErrorCode);
+        errorList[0].ElementValue.ShouldBe(expectedErrorList[0].ElementValue);
+        errorList[0].ErrorCategory.ShouldBe(expectedErrorList[0].ErrorCategory);
+        errorList[0].ErrorDescription.ShouldBe(expectedErrorList[0].ErrorDescription);
+        errorList[0].ErrorElement.ShouldBe(expectedErrorList[0].ErrorElement);
     }
 }
