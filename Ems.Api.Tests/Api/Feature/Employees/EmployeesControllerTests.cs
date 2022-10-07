@@ -25,6 +25,7 @@ public class EmployeesControllerTests
     public void TestInitialize()
     {
         this.addEmployeeValidator = A.Fake<IAddEmployeeValidator>();
+
         this.controller = new EmployeesController(
             this.addEmployeeValidator);
     }
@@ -33,7 +34,13 @@ public class EmployeesControllerTests
     public async Task AddEmployee_Should_Return_BadRequest_When_Request_Is_InValid()
     {
         // Arrange
-        var employee = new Employee();
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            Email = "email",
+            Age = 15,
+        };
+
         List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
         {
             new ErrorDetail()
