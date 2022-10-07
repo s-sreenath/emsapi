@@ -200,4 +200,27 @@ public class AddEmployeeValidatorTests
         e.ErrorElement == "Email" &&
         e.ElementValue == employee.Email).ShouldBeTrue();
     }
+
+    [TestMethod]
+    public void Should_Return_IsValid_False_When_Email_Is_Invalid_Format()
+    {
+        // Arrange
+        var employee = new Employee()
+        {
+            FirstName = "FirstName",
+            Age = 10,
+            LastName = "lastName",
+            Email = new string('q', 15),
+        };
+
+        // Act
+        this.validator.Validate(employee);
+
+        // Assert
+        this.validator.IsValid.ShouldBeFalse();
+        this.validator.Errors.Any(e => e.ErrorCode == ErrorCode.EmployeeEmailIsNotValid.ToString("D") &&
+        e.ErrorCategory == ErrorCategory.Error.ToString() &&
+        e.ErrorElement == "Email" &&
+        e.ElementValue == employee.Email).ShouldBeTrue();
+    }
 }

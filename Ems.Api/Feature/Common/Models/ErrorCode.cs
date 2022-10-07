@@ -40,5 +40,10 @@ namespace Ems.Api.Feature.Common.Models
         /// Employee email length is greater than max limit.
         /// </summary>
         EmployeeEmailExceedsMaxLength = 1006,
+
+        /// <summary>
+        /// Employee email is not valid
+        /// </summary>
+        EmployeeEmailIsNotValid = 1007,
     }
 }

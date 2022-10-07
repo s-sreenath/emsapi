@@ -6,9 +6,15 @@ namespace Ems.Api.Feature.Employees.Validators;
 
 using Ems.Api.Feature.Common.Models;
 using Ems.Api.Feature.Employees.Models;
+using Ems.Api.Feature.Employees.Validators.Interfaces;
+using System.Text.RegularExpressions;
 
-public class AddEmployeeValidator
+public class AddEmployeeValidator : IAddEmployeeValidator
 {
+    private const int FirstNameMaxLength = 50;
+    private const int LastNameMaxLength = 50;
+    private const int EmailMaxLength = 50;
+
     public AddEmployeeValidator()
     {
         this.Errors = new List<ErrorDetail>();
@@ -23,7 +29,11 @@ public class AddEmployeeValidator
         this.ValidateFirstName(employee);
         this.ValidateLastName(employee);
         this.ValidatrAge(employee);
+        this.ValidateEmail(employee);
+    }
 
+    private void ValidateEmail(Employee employee)
+    {
         if (string.IsNullOrEmpty(employee.Email))
         {
             this.Errors.Add(new ErrorDetail()
@@ -34,11 +44,22 @@ public class AddEmployeeValidator
             });
         }
 
-        if (employee.Email.Length > 50)
+        if (employee.Email.Length > EmailMaxLength)
         {
             this.Errors.Add(new ErrorDetail()
             {
                 ErrorCode = ErrorCode.EmployeeEmailExceedsMaxLength.ToString("D"),
+                ErrorCategory = ErrorCategory.Error.ToString(),
+                ElementValue = employee.Email,
+                ErrorElement = nameof(employee.Email),
+            });
+        }
+
+        if (!Regex.IsMatch(employee.Email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase))
+        {
+            this.Errors.Add(new ErrorDetail()
+            {
+                ErrorCode = ErrorCode.EmployeeEmailIsNotValid.ToString("D"),
                 ErrorCategory = ErrorCategory.Error.ToString(),
                 ElementValue = employee.Email,
                 ErrorElement = nameof(employee.Email),
@@ -58,7 +79,7 @@ public class AddEmployeeValidator
             });
         }
 
-        if (employee.FirstName.Length > 50)
+        if (employee.FirstName.Length > FirstNameMaxLength)
         {
             this.Errors.Add(new ErrorDetail()
             {
@@ -82,7 +103,7 @@ public class AddEmployeeValidator
             });
         }
 
-        if (employee.LastName.Length > 50)
+        if (employee.LastName.Length > LastNameMaxLength)
         {
             this.Errors.Add(new ErrorDetail()
             {
