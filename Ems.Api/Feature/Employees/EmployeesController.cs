@@ -5,9 +5,11 @@
 namespace Ems.Api.Feature.Employees;
 
 using Ems.Api.Feature.Common.Models;
+using Ems.Api.Feature.Employees.Commands;
 using Ems.Api.Feature.Employees.Models;
 using Ems.Api.Feature.Employees.Models.Response;
 using Ems.Api.Feature.Employees.Validators.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -17,11 +19,15 @@ using System.Threading.Tasks;
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    private IAddEmployeeValidator addEmployeeValidator;
+    private readonly IAddEmployeeValidator addEmployeeValidator;
+    private readonly IMediator mediator;
 
-    public EmployeesController(IAddEmployeeValidator addEmployeeValidator)
+    public EmployeesController(
+        IAddEmployeeValidator addEmployeeValidator,
+        IMediator mediator)
     {
         this.addEmployeeValidator = addEmployeeValidator;
+        this.mediator = mediator;
     }
 
     [HttpPost]
@@ -32,8 +38,6 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<AddEmployeeResponse>> AddEmployeeAsync([FromBody]Employee employee)
     {
-        await Task.Delay(10);
-
         this.addEmployeeValidator.Validate(employee);
 
         if (!this.addEmployeeValidator.IsValid)
@@ -41,6 +45,9 @@ public class EmployeesController : ControllerBase
             return this.BadRequest(this.addEmployeeValidator.Errors);
         }
 
-        return this.Ok();
+        var command = new AddEmployeeCommand(employee);
+        var response = await this.mediator.Send(command).ConfigureAwait(true);
+
+        return this.Ok(response);
     }
 }

@@ -18,11 +18,11 @@ public class AddEmployeeCommand : IRequest<AddEmployeeResponse>
         this.Email = employee.Email;
     }
 
-    public object FirstName { get; }
+    public string FirstName { get; }
 
-    public object LastName { get; }
+    public string LastName { get; }
 
-    public object Email { get; }
+    public string Email { get; }
 
-    public object Age { get; }
+    public int Age { get; }
 }
