@@ -19,6 +19,8 @@ namespace Ems.Api.Data
         public DatabaseContext()
         {
             this.Database.EnsureCreated();
+
+            this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public DbSet<EmployeeDto>? Employees { get; set; }

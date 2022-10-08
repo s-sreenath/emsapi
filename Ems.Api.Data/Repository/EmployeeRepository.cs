@@ -28,10 +28,12 @@ namespace Ems.Api.Data.Repository
 
         public async Task DeleteAsync(int employeeId)
         {
-            this.context.Remove(new EmployeeDto()
+            var remove = this.context.Remove(new EmployeeDto()
             {
                 EmployeeId = employeeId,
             });
+
+            remove.State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
 
             await this.context.SaveChangesAsync().ConfigureAwait(true);
         }
@@ -53,7 +55,8 @@ namespace Ems.Api.Data.Repository
 
         public async Task UpdateAsync(EmployeeDto employeeDto)
         {
-            this.context.Update(employeeDto);
+            var update = this.context.Update<EmployeeDto>(employeeDto);
+            update.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             await this.context.SaveChangesAsync().ConfigureAwait(true);
         }
     }

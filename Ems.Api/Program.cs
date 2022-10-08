@@ -24,8 +24,8 @@ internal class Program
         var dbContext = new DatabaseContext();
 
         builder.Services.AddTransient<IEmployeeValidator, EmployeeValidator>();
+        builder.Services.AddScoped<DatabaseContext>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        builder.Services.AddDbContext<DatabaseContext>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

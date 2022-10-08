@@ -183,6 +183,22 @@ public class EmployeesControllerTests
     }
 
     [TestMethod]
+    public async Task GetEmployee_Should_Return_404_When_EmployeeId_Is_Not_Found()
+    {
+        // Arrange
+        var employeeId = 457;
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>._, CancellationToken.None)).Returns(new EmployeeInquiryResponse());
+
+        // Act
+        var result = await this.controller.GetEmployee(employeeId).ConfigureAwait(true);
+        var notFoundResult = result.Result as NotFoundResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        notFoundResult.ShouldNotBeNull();
+    }
+
+    [TestMethod]
     public async Task GetEmployee_Should_Return_Employee_Record()
     {
         // Arrange

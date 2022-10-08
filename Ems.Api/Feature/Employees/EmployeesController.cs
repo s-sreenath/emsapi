@@ -73,6 +73,11 @@ public class EmployeesController : ControllerBase
         var command = new EmployeeInquiryQuery(employeeId);
         var response = await this.mediator.Send(command).ConfigureAwait(true);
 
+        if (response.Employee.EmployeeId <= 0)
+        {
+            return this.NotFound();
+        }
+
         return this.Ok(response);
     }
 
