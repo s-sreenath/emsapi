@@ -55,4 +55,20 @@ public class EmployeesController : ControllerBase
 
         return this.Ok(response);
     }
+
+    [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [Route("/{employeeId}")]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<ActionResult<Employee>> GetEmployee([FromRoute]int employeeId)
+    {
+        if (employeeId <= 0)
+        {
+            return this.NotFound();
+        }
+
+        await Task.Delay(10);
+        throw new NotImplementedException();
+    }
 }

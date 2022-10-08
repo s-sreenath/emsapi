@@ -165,4 +165,18 @@ public class EmployeesControllerTests
             e.Age == employee.Age &&
             e.Email == employee.Email), CancellationToken.None)).MustHaveHappened();
     }
+
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    public async Task GetEmployee_Should_Return_404_When_EmployeeId_Is_Less_Than_Equal_To_0(int employeeId)
+    {
+        // Act
+        var result = await this.controller.GetEmployee(employeeId).ConfigureAwait(true);
+        var notFoundResult = result.Result as NotFoundResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        notFoundResult.ShouldNotBeNull();
+    }
 }

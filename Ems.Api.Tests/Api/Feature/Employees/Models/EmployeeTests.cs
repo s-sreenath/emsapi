@@ -20,6 +20,7 @@ public class EmployeeTests
         var lastName = "lastName";
         var email = "email@email.com";
         var age = 12;
+        var employeeId = 16;
 
         // Act
         var employee = new Employee
@@ -28,6 +29,7 @@ public class EmployeeTests
             LastName = lastName,
             Email = email,
             Age = age,
+            EmployeeId = employeeId,
         };
 
         // Assert
@@ -35,6 +37,7 @@ public class EmployeeTests
         employee.LastName.ShouldBe(lastName);
         employee.Email.ShouldBe(email);
         employee.Age.ShouldBe(age);
+        employee.EmployeeId.ShouldBe(employeeId);
     }
 
     [TestMethod]
@@ -45,6 +48,7 @@ public class EmployeeTests
         var lastName = "lastName";
         var email = "email@email.com";
         var age = 12;
+        var employeeId = 16;
 
         var employee = new Employee
         {
@@ -52,9 +56,10 @@ public class EmployeeTests
             LastName = lastName,
             Email = email,
             Age = age,
+            EmployeeId = employeeId,
         };
 
-        var expectedJson = "{\"FirstName\":\"firstName\",\"LastName\":\"lastName\",\"Email\":\"email@email.com\",\"Age\":12}";
+        var expectedJson = "{\"FirstName\":\"firstName\",\"LastName\":\"lastName\",\"Email\":\"email@email.com\",\"Age\":12,\"EmployeeId\":16}";
 
         // Act
         var result = JsonSerializer.Serialize(employee);
@@ -71,8 +76,9 @@ public class EmployeeTests
         var lastName = "lastName";
         var email = "email@email.com";
         var age = 12;
+        var employeeId = 16;
 
-        var json = "{\"FirstName\":\"firstName\",\"LastName\":\"lastName\",\"Email\":\"email@email.com\",\"Age\":12}";
+        var json = "{\"FirstName\":\"firstName\",\"LastName\":\"lastName\",\"Email\":\"email@email.com\",\"Age\":12,\"EmployeeId\":16}";
 
         // Act
         var result = JsonSerializer.Deserialize<Employee>(json);
@@ -83,5 +89,6 @@ public class EmployeeTests
         result.LastName.ShouldBe(lastName);
         result.Email.ShouldBe(email);
         result.Age.ShouldBe(age);
+        result.EmployeeId.ShouldBe(employeeId);
     }
 }

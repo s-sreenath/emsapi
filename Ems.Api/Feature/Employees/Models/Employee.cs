@@ -26,4 +26,6 @@ public class Employee
 
     [Required]
     public int Age { get; set; }
+
+    public int EmployeeId { get; set; }
 }
