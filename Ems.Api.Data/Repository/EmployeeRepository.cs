@@ -42,5 +42,14 @@ namespace Ems.Api.Data.Repository
                 return await context.FindAsync(typeof(EmployeeDto), id).ConfigureAwait(true) as EmployeeDto;
             }
         }
+
+        public async Task UpdateAsync(EmployeeDto employeeDto)
+        {
+            using (var context = new DatabaseContext())
+            {
+                context.Update(employeeDto);
+                await context.SaveChangesAsync().ConfigureAwait(true);
+            }
+        }
     }
 }

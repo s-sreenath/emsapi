@@ -15,5 +15,5 @@ public class AddEmployeeResponse
 
     public int EmployeeId { get; set; }
 
-    public List<ErrorDetail> Details { get; set; }
+    public List<ErrorDetail> Details { get; }
 }
