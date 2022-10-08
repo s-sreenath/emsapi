@@ -11,45 +11,50 @@ namespace Ems.Api.Data.Repository
     [ExcludeFromCodeCoverage]
     public class EmployeeRepository : IEmployeeRepository
     {
+        private DatabaseContext context;
+
+        public EmployeeRepository(DatabaseContext context)
+        {
+            this.context = context;
+        }
+
         public async Task<EmployeeDto> AddEmployeeAsync(EmployeeDto dto)
         {
-            using (var context = new DatabaseContext())
-            {
-                context.Add(dto);
-                await context.SaveChangesAsync().ConfigureAwait(true);
-            }
+            this.context.Add(dto);
+            await this.context.SaveChangesAsync().ConfigureAwait(true);
 
             return dto;
         }
 
-        public IEnumerable<EmployeeDto> GetAll()
+        public async Task DeleteAsync(int employeeId)
         {
-            using (var context = new DatabaseContext())
+            this.context.Remove(new EmployeeDto()
             {
-                if (context.Employees != null)
-                {
-                    return context.Employees.ToList();
-                }
+                EmployeeId = employeeId,
+            });
 
-                return Enumerable.Empty<EmployeeDto>();
-            }
+            await this.context.SaveChangesAsync().ConfigureAwait(true);
         }
 
-        public async Task<EmployeeDto?> GetByIdAsync(int id)
+        public IEnumerable<EmployeeDto> GetAll()
         {
-            using (var context = new DatabaseContext())
+            if (this.context.Employees != null)
             {
-                return await context.FindAsync(typeof(EmployeeDto), id).ConfigureAwait(true) as EmployeeDto;
+                return this.context.Employees.ToList();
             }
+
+            return Enumerable.Empty<EmployeeDto>();
+        }
+
+        public async Task<EmployeeDto?> GetByIdAsync(int employeeId)
+        {
+            return await this.context.FindAsync(typeof(EmployeeDto), employeeId).ConfigureAwait(true) as EmployeeDto;
         }
 
         public async Task UpdateAsync(EmployeeDto employeeDto)
         {
-            using (var context = new DatabaseContext())
-            {
-                context.Update(employeeDto);
-                await context.SaveChangesAsync().ConfigureAwait(true);
-            }
+            this.context.Update(employeeDto);
+            await this.context.SaveChangesAsync().ConfigureAwait(true);
         }
     }
 }

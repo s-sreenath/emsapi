@@ -12,8 +12,10 @@ namespace Ems.Api.Data.Repository
 
         IEnumerable<EmployeeDto> GetAll();
 
-        Task<EmployeeDto?> GetByIdAsync(int id);
+        Task<EmployeeDto?> GetByIdAsync(int employeeId);
 
         Task UpdateAsync(EmployeeDto employeeDto);
+
+        Task DeleteAsync(int employeeId);
     }
 }

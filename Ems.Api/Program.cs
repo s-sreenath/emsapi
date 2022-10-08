@@ -22,8 +22,11 @@ internal class Program
         builder.Services.AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
+        var dbContext = new DatabaseContext();
+
         builder.Services.AddTransient<IEmployeeValidator, AddEmployeeValidator>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        builder.Services.AddSingleton(dbContext);
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
