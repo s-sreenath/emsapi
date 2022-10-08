@@ -107,7 +107,26 @@ public class EmployeesController : ControllerBase
         }
 
         var command = new ModifyEmployeeCommand(employeeId, employee);
-        var response = await this.mediator.Send(command).ConfigureAwait(true);
+        await this.mediator.Send(command).ConfigureAwait(true);
+
+        return this.NoContent();
+    }
+
+    [HttpDelete]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [Route("{employeeId}")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<ActionResult> DeleteEmployee(int employeeId)
+    {
+        if (employeeId <= 0)
+        {
+            return this.NotFound();
+        }
+
+        var command = new DeleteEmployeeCommand(employeeId);
+        await this.mediator.Send(command).ConfigureAwait(true);
 
         return this.NoContent();
     }

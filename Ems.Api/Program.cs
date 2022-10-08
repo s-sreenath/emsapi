@@ -18,15 +18,14 @@ internal class Program
 
         builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 
-        // builder.Services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
         builder.Services.AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
         var dbContext = new DatabaseContext();
 
-        builder.Services.AddTransient<IEmployeeValidator, AddEmployeeValidator>();
+        builder.Services.AddTransient<IEmployeeValidator, EmployeeValidator>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        builder.Services.AddSingleton(dbContext);
+        builder.Services.AddDbContext<DatabaseContext>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

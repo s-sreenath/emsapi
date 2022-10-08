@@ -1,4 +1,4 @@
-﻿// <copyright file="AddEmployeeValidatorTests.cs" company="EmsApi Company">
+﻿// <copyright file="EmployeeValidatorTests.cs" company="EmsApi Company">
 // Copyright (c) EmsApi Company. All rights reserved.
 // </copyright>
 
@@ -12,14 +12,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 [TestClass]
-public class AddEmployeeValidatorTests
+public class EmployeeValidatorTests
 {
-    private AddEmployeeValidator validator;
+    private EmployeeValidator validator;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        this.validator = new AddEmployeeValidator();
+        this.validator = new EmployeeValidator();
     }
 
     [TestMethod]

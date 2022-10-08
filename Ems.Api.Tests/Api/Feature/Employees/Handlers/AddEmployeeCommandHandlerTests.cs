@@ -4,10 +4,9 @@
 
 namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
 {
-    using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using Ems.Api.Data.DTO;
@@ -23,6 +22,7 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     using Shouldly;
 
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class AddEmployeeCommandHandlerTests
     {
         private IEmployeeRepository repository;

@@ -3,13 +3,7 @@
 // </copyright>
 
 namespace Ems.Api.Tests.Api.Feature.Employees.Commands;
-
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ems.Api.Feature.Employees.Commands;
 using Ems.Api.Feature.Employees.Models;
 using Ems.Api.Feature.Employees.Models.Response;

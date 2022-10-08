@@ -1,4 +1,4 @@
-﻿// <copyright file="AddEmployeeValidator.cs" company="EmsApi Company">
+﻿// <copyright file="EmployeeValidator.cs" company="EmsApi Company">
 // Copyright (c) EmsApi Company. All rights reserved.
 // </copyright>
 
@@ -9,13 +9,13 @@ using Ems.Api.Feature.Employees.Models;
 using Ems.Api.Feature.Employees.Validators.Interfaces;
 using System.Text.RegularExpressions;
 
-public class AddEmployeeValidator : IEmployeeValidator
+public class EmployeeValidator : IEmployeeValidator
 {
     private const int FirstNameMaxLength = 50;
     private const int LastNameMaxLength = 50;
     private const int EmailMaxLength = 50;
 
-    public AddEmployeeValidator()
+    public EmployeeValidator()
     {
         this.Errors = new List<ErrorDetail>();
     }

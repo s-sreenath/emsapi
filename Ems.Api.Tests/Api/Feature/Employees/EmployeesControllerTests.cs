@@ -16,10 +16,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class EmployeesControllerTests
 {
     private IEmployeeValidator employeeValidator;
@@ -348,5 +350,38 @@ public class EmployeesControllerTests
         errorList[0].ErrorElement.ShouldBe(expectedErrorList[0].ErrorElement);
 
         A.CallTo(() => this.mediator.Send(A<ModifyEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task DeleteEmployee_Should_Return_NoContent_Responses_When_Handler_Success()
+    {
+        // Arrange
+        var employeeId = 134;
+
+        A.CallTo(() => this.mediator.Send(A<DeleteEmployeeCommand>._, CancellationToken.None)).Returns(new DeleteEmployeeResponse());
+
+        // Act
+        var result = await this.controller.DeleteEmployee(employeeId).ConfigureAwait(true);
+        var noContentResult = result as NoContentResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        noContentResult.ShouldNotBeNull();
+        A.CallTo(() => this.mediator.Send(A<DeleteEmployeeCommand>._, CancellationToken.None)).MustHaveHappened();
+    }
+
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    public async Task DeleteEmployee_Should_Return_NotFound_Responses_When_EmployeeId_Is_Less_Than_Equal_To_0(int employeeId)
+    {
+        // Act
+        var result = await this.controller.DeleteEmployee(employeeId).ConfigureAwait(true);
+        var notFoundResult = result as NotFoundResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        notFoundResult.ShouldNotBeNull();
+        A.CallTo(() => this.mediator.Send(A<DeleteEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
     }
 }
