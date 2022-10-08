@@ -10,9 +10,9 @@ namespace Ems.Api.Feature.Employees.Commands
 
     public class ModifyEmployeeCommand : IRequest<ModifyEmployeeResponse>
     {
-        public ModifyEmployeeCommand(Employee employee)
+        public ModifyEmployeeCommand(int employeeId, Employee employee)
         {
-            this.EmployeeId = employee.EmployeeId;
+            this.EmployeeId = employeeId;
             this.FirstName = employee.FirstName;
             this.LastName = employee.LastName;
             this.Age = employee.Age;

@@ -9,7 +9,7 @@ using Ems.Api.Feature.Employees.Models;
 using Ems.Api.Feature.Employees.Validators.Interfaces;
 using System.Text.RegularExpressions;
 
-public class AddEmployeeValidator : IAddEmployeeValidator
+public class AddEmployeeValidator : IEmployeeValidator
 {
     private const int FirstNameMaxLength = 50;
     private const int LastNameMaxLength = 50;

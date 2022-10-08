@@ -22,7 +22,7 @@ internal class Program
         builder.Services.AddControllers()
             .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
-        builder.Services.AddTransient<IAddEmployeeValidator, AddEmployeeValidator>();
+        builder.Services.AddTransient<IEmployeeValidator, AddEmployeeValidator>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

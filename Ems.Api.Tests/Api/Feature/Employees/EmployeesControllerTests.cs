@@ -22,18 +22,18 @@ using System.Threading.Tasks;
 [TestClass]
 public class EmployeesControllerTests
 {
-    private IAddEmployeeValidator addEmployeeValidator;
+    private IEmployeeValidator employeeValidator;
     private IMediator mediator;
     private EmployeesController controller;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        this.addEmployeeValidator = A.Fake<IAddEmployeeValidator>();
+        this.employeeValidator = A.Fake<IEmployeeValidator>();
         this.mediator = A.Fake<IMediator>();
 
         this.controller = new EmployeesController(
-            this.addEmployeeValidator,
+            this.employeeValidator,
             this.mediator);
     }
 
@@ -60,8 +60,8 @@ public class EmployeesControllerTests
             },
         };
 
-        A.CallTo(() => this.addEmployeeValidator.IsValid).Returns(false);
-        A.CallTo(() => this.addEmployeeValidator.Errors).Returns(expectedErrorList);
+        A.CallTo(() => this.employeeValidator.IsValid).Returns(false);
+        A.CallTo(() => this.employeeValidator.Errors).Returns(expectedErrorList);
 
         // Act
         var result = await this.controller.AddEmployeeAsync(employee).ConfigureAwait(true);
@@ -72,7 +72,7 @@ public class EmployeesControllerTests
         result.ShouldNotBeNull();
         badRequestObjectResult.ShouldNotBeNull();
 
-        A.CallTo(() => this.addEmployeeValidator.Validate(employee)).MustHaveHappened();
+        A.CallTo(() => this.employeeValidator.Validate(employee)).MustHaveHappened();
 
         errorList.ShouldNotBeNull();
         errorList.Count.ShouldBe(1);
@@ -112,7 +112,7 @@ public class EmployeesControllerTests
         var response = new AddEmployeeResponse();
         response.Details.AddRange(expectedErrorList);
 
-        A.CallTo(() => this.addEmployeeValidator.IsValid).Returns(true);
+        A.CallTo(() => this.employeeValidator.IsValid).Returns(true);
         A.CallTo(() => this.mediator.Send(A<AddEmployeeCommand>._, CancellationToken.None)).Returns(response);
 
         // Act
@@ -124,7 +124,7 @@ public class EmployeesControllerTests
         result.ShouldNotBeNull();
         badRequestObjectResult.ShouldNotBeNull();
 
-        A.CallTo(() => this.addEmployeeValidator.Validate(employee)).MustHaveHappened();
+        A.CallTo(() => this.employeeValidator.Validate(employee)).MustHaveHappened();
 
         errorList.ShouldNotBeNull();
         errorList.Count.ShouldBe(1);
@@ -148,7 +148,7 @@ public class EmployeesControllerTests
             Age = 15,
         };
 
-        A.CallTo(() => this.addEmployeeValidator.IsValid).Returns(true);
+        A.CallTo(() => this.employeeValidator.IsValid).Returns(true);
 
         // Act
         var result = await this.controller.AddEmployeeAsync(employee).ConfigureAwait(true);
@@ -210,5 +210,143 @@ public class EmployeesControllerTests
         resultObject.ShouldNotBeNull();
         resultObject.Employee.ShouldNotBeNull();
         resultObject.Employee.EmployeeId.ShouldBe(employeeId);
+    }
+
+    [TestMethod]
+    public async Task ModifyEmployee_Should_Return_NoContent_Responses_When_Request_Is_Valid()
+    {
+        // Arrange
+        var employeeId = 134;
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            LastName = "LastName",
+            Email = "email@Email.com",
+            Age = 15,
+            EmployeeId = employeeId,
+        };
+
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>._, CancellationToken.None)).Returns(new EmployeeInquiryResponse()
+        {
+            Employee = employee,
+        });
+
+        A.CallTo(() => this.employeeValidator.IsValid).Returns(true);
+
+        // Act
+        var result = await this.controller.ModifyEmployee(employeeId, employee).ConfigureAwait(true);
+        var noContentResult = result as NoContentResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        noContentResult.ShouldNotBeNull();
+        A.CallTo(() => this.mediator.Send(A<ModifyEmployeeCommand>._, CancellationToken.None)).MustHaveHappened();
+    }
+
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    public async Task ModifyEmployee_Should_Return_NotFound_Responses_When_EmployeeId_Is_Less_Than_Equal_To_0(int employeeId)
+    {
+        // Arrange
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            LastName = "LastName",
+            Email = "email@Email.com",
+            Age = 15,
+        };
+
+        // Act
+        var result = await this.controller.ModifyEmployee(employeeId, employee).ConfigureAwait(true);
+        var notFoundResult = result as NotFoundResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        notFoundResult.ShouldNotBeNull();
+        A.CallTo(() => this.mediator.Send(A<ModifyEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task ModifyEmployee_Should_Return_NotFound_Responses_When_EmployeeId_NotFound()
+    {
+        // Arrange
+        var employeeId = 154;
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            LastName = "LastName",
+            Email = "email@Email.com",
+            Age = 15,
+        };
+
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>._, CancellationToken.None)).Returns(new EmployeeInquiryResponse());
+
+        // Act
+        var result = await this.controller.ModifyEmployee(employeeId, employee).ConfigureAwait(true);
+        var notFoundResult = result as NotFoundResult;
+
+        // Assert
+        result.ShouldNotBeNull();
+        notFoundResult.ShouldNotBeNull();
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>._, CancellationToken.None)).MustHaveHappened();
+        A.CallTo(() => this.mediator.Send(A<ModifyEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task ModifyEmployee_Should_Return_BadRequest_Responses_When_Request_Is_InValid()
+    {
+        // Arrange
+        var employeeId = 154;
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            LastName = "LastName",
+            Email = "email@Email.com",
+            Age = 15,
+            EmployeeId = employeeId,
+        };
+
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>._, CancellationToken.None)).Returns(new EmployeeInquiryResponse()
+        {
+            Employee = employee,
+        });
+
+        List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
+        {
+            new ErrorDetail()
+            {
+                ErrorCode = "ErrorCode",
+                ElementValue = "ElementValue",
+                ErrorCategory = "ErrorCategory",
+                ErrorDescription = "ErrorDescription",
+                ErrorElement = "ErrorElement",
+            },
+        };
+
+        A.CallTo(() => this.employeeValidator.IsValid).Returns(false);
+        A.CallTo(() => this.employeeValidator.Errors).Returns(expectedErrorList);
+
+        // Act
+        var result = await this.controller.ModifyEmployee(employeeId, employee).ConfigureAwait(true);
+        var badRequestObjectResult = result as BadRequestObjectResult;
+        var errorList = badRequestObjectResult?.Value as List<ErrorDetail>;
+
+        // Assert
+        result.ShouldNotBeNull();
+        badRequestObjectResult.ShouldNotBeNull();
+
+        A.CallTo(() => this.employeeValidator.Validate(employee)).MustHaveHappened();
+
+        errorList.ShouldNotBeNull();
+        errorList.Count.ShouldBe(1);
+        errorList[0].ShouldNotBeNull();
+        errorList[0].ErrorCode.ShouldBe(expectedErrorList[0].ErrorCode);
+        errorList[0].ElementValue.ShouldBe(expectedErrorList[0].ElementValue);
+        errorList[0].ErrorCategory.ShouldBe(expectedErrorList[0].ErrorCategory);
+        errorList[0].ErrorDescription.ShouldBe(expectedErrorList[0].ErrorDescription);
+        errorList[0].ErrorElement.ShouldBe(expectedErrorList[0].ErrorElement);
+
+        A.CallTo(() => this.mediator.Send(A<ModifyEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
     }
 }

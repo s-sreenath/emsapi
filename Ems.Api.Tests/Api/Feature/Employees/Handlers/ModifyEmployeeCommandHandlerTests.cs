@@ -57,7 +57,7 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
                 EmployeeId = 152,
             };
 
-            var command = new ModifyEmployeeCommand(employee);
+            var command = new ModifyEmployeeCommand(employee.EmployeeId, employee);
 
             // Act
             var result = await this.handler.Handle(command, CancellationToken.None).ConfigureAwait(true);
@@ -84,7 +84,7 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
                 EmployeeId = 152,
             };
 
-            var command = new ModifyEmployeeCommand(employee);
+            var command = new ModifyEmployeeCommand(employee.EmployeeId, employee);
 
             var employees = new List<EmployeeDto>();
             employees.Add(new EmployeeDto()

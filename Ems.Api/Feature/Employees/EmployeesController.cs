@@ -19,14 +19,14 @@ using System.Threading.Tasks;
 [ApiController]
 public class EmployeesController : ControllerBase
 {
-    private readonly IAddEmployeeValidator addEmployeeValidator;
+    private readonly IEmployeeValidator employeeValidator;
     private readonly IMediator mediator;
 
     public EmployeesController(
-        IAddEmployeeValidator addEmployeeValidator,
+        IEmployeeValidator addEmployeeValidator,
         IMediator mediator)
     {
-        this.addEmployeeValidator = addEmployeeValidator;
+        this.employeeValidator = addEmployeeValidator;
         this.mediator = mediator;
     }
 
@@ -38,11 +38,11 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<AddEmployeeResponse>> AddEmployeeAsync([FromBody]Employee employee)
     {
-        this.addEmployeeValidator.Validate(employee);
+        this.employeeValidator.Validate(employee);
 
-        if (!this.addEmployeeValidator.IsValid)
+        if (!this.employeeValidator.IsValid)
         {
-            return this.BadRequest(this.addEmployeeValidator.Errors);
+            return this.BadRequest(this.employeeValidator.Errors);
         }
 
         var command = new AddEmployeeCommand(employee);
@@ -56,13 +56,14 @@ public class EmployeesController : ControllerBase
         return this.Ok(response);
     }
 
-    [HttpPost]
+    [HttpGet]
     [Consumes("application/json")]
     [Produces("application/json")]
     [Route("{employeeId}")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(EmployeeInquiryResponse), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Employee>> GetEmployee([FromRoute]int employeeId)
+    [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult<EmployeeInquiryResponse>> GetEmployee([FromRoute]int employeeId)
     {
         if (employeeId <= 0)
         {
@@ -73,5 +74,41 @@ public class EmployeesController : ControllerBase
         var response = await this.mediator.Send(command).ConfigureAwait(true);
 
         return this.Ok(response);
+    }
+
+    [HttpPut]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [Route("{employeeId}")]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
+    public async Task<ActionResult> ModifyEmployee([FromRoute]int employeeId, [FromBody]Employee employee)
+    {
+        if (employeeId <= 0)
+        {
+            return this.NotFound();
+        }
+
+        var inquiryQuery = new EmployeeInquiryQuery(employeeId);
+        var employeeInquiryResponse = await this.mediator.Send(inquiryQuery).ConfigureAwait(true);
+
+        if (employeeInquiryResponse?.Employee.EmployeeId != employeeId)
+        {
+            return this.NotFound();
+        }
+
+        this.employeeValidator.Validate(employee);
+
+        if (!this.employeeValidator.IsValid)
+        {
+            return this.BadRequest(this.employeeValidator.Errors);
+        }
+
+        var command = new ModifyEmployeeCommand(employeeId, employee);
+        var response = await this.mediator.Send(command).ConfigureAwait(true);
+
+        return this.NoContent();
     }
 }
