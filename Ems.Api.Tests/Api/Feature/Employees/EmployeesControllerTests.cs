@@ -179,4 +179,36 @@ public class EmployeesControllerTests
         result.ShouldNotBeNull();
         notFoundResult.ShouldNotBeNull();
     }
+
+    [TestMethod]
+    public async Task GetEmployee_Should_Return_Employee_Record()
+    {
+        // Arrange
+        var employeeId = 15;
+        var inquiryReponse = new EmployeeInquiryResponse()
+        {
+            Employee = new Employee()
+            {
+                FirstName = "FirstName",
+                EmployeeId = employeeId,
+                Age = 15,
+                Email = "Email@Email.com",
+                LastName = "LastName",
+            },
+        };
+
+        A.CallTo(() => this.mediator.Send(A<EmployeeInquiryQuery>.That.Matches(e => e.EmployeeId == employeeId), CancellationToken.None)).Returns(inquiryReponse);
+
+        // Act
+        var result = await this.controller.GetEmployee(employeeId).ConfigureAwait(true);
+        var okObjectResult = result.Result as OkObjectResult;
+        var resultObject = okObjectResult?.Value as EmployeeInquiryResponse;
+
+        // Assert
+        result.ShouldNotBeNull();
+        okObjectResult.ShouldNotBeNull();
+        resultObject.ShouldNotBeNull();
+        resultObject.Employee.ShouldNotBeNull();
+        resultObject.Employee.EmployeeId.ShouldBe(employeeId);
+    }
 }

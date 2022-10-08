@@ -59,8 +59,9 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [Route("/{employeeId}")]
+    [Route("{employeeId}")]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(EmployeeInquiryResponse), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<Employee>> GetEmployee([FromRoute]int employeeId)
     {
         if (employeeId <= 0)
@@ -68,7 +69,9 @@ public class EmployeesController : ControllerBase
             return this.NotFound();
         }
 
-        await Task.Delay(10);
-        throw new NotImplementedException();
+        var command = new EmployeeInquiryQuery(employeeId);
+        var response = await this.mediator.Send(command).ConfigureAwait(true);
+
+        return this.Ok(response);
     }
 }

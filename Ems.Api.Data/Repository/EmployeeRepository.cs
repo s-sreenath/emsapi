@@ -34,5 +34,13 @@ namespace Ems.Api.Data.Repository
                 return Enumerable.Empty<EmployeeDto>();
             }
         }
+
+        public async Task<EmployeeDto?> GetByIdAsync(int id)
+        {
+            using (var context = new DatabaseContext())
+            {
+                return await context.FindAsync(typeof(EmployeeDto), id).ConfigureAwait(true) as EmployeeDto;
+            }
+        }
     }
 }
