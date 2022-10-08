@@ -82,6 +82,58 @@ public class EmployeesControllerTests
         errorList[0].ErrorCategory.ShouldBe(expectedErrorList[0].ErrorCategory);
         errorList[0].ErrorDescription.ShouldBe(expectedErrorList[0].ErrorDescription);
         errorList[0].ErrorElement.ShouldBe(expectedErrorList[0].ErrorElement);
+
+        A.CallTo(() => this.mediator.Send(A<AddEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task AddEmployee_Should_Return_BadRequest_When_Handler_Returns_Errors()
+    {
+        // Arrange
+        var employee = new Employee()
+        {
+            FirstName = "firstName",
+            Email = "email",
+            Age = 15,
+        };
+
+        List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
+        {
+            new ErrorDetail()
+            {
+                ErrorCode = "ErrorCode",
+                ElementValue = "ElementValue",
+                ErrorCategory = "Error",
+                ErrorDescription = "ErrorDescription",
+                ErrorElement = "ErrorElement",
+            },
+        };
+
+        var response = new AddEmployeeResponse();
+        response.Details.AddRange(expectedErrorList);
+
+        A.CallTo(() => this.addEmployeeValidator.IsValid).Returns(true);
+        A.CallTo(() => this.mediator.Send(A<AddEmployeeCommand>._, CancellationToken.None)).Returns(response);
+
+        // Act
+        var result = await this.controller.AddEmployeeAsync(employee).ConfigureAwait(true);
+        var badRequestObjectResult = result.Result as BadRequestObjectResult;
+        var errorList = badRequestObjectResult?.Value as List<ErrorDetail>;
+
+        // Assert
+        result.ShouldNotBeNull();
+        badRequestObjectResult.ShouldNotBeNull();
+
+        A.CallTo(() => this.addEmployeeValidator.Validate(employee)).MustHaveHappened();
+
+        errorList.ShouldNotBeNull();
+        errorList.Count.ShouldBe(1);
+        errorList[0].ShouldNotBeNull();
+        errorList[0].ErrorCode.ShouldBe(expectedErrorList[0].ErrorCode);
+        errorList[0].ElementValue.ShouldBe(expectedErrorList[0].ElementValue);
+        errorList[0].ErrorCategory.ShouldBe(expectedErrorList[0].ErrorCategory);
+        errorList[0].ErrorDescription.ShouldBe(expectedErrorList[0].ErrorDescription);
+        errorList[0].ErrorElement.ShouldBe(expectedErrorList[0].ErrorElement);
     }
 
     [TestMethod]

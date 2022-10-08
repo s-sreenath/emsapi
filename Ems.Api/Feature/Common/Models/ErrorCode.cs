@@ -45,5 +45,10 @@ namespace Ems.Api.Feature.Common.Models
         /// Employee email is not valid
         /// </summary>
         EmployeeEmailIsNotValid = 1007,
+
+        /// <summary>
+        /// Employee Already exists
+        /// </summary>
+        EmployeeAlreadyExists = 1008,
     }
 }

@@ -34,6 +34,11 @@ namespace Ems.Api.Data.Migrations
                 table: "Employees",
                 columns: new[] { "EmployeeId", "Age", "Email", "FirstName", "LastName" },
                 values: new object[] { 1, 35, "Email@Email.com", "John", "Doe" });
+
+            migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "EmployeeId", "Age", "Email", "FirstName", "LastName" },
+                values: new object[] { 2, 45, "example_2@Email.com", "John II", "Doe" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

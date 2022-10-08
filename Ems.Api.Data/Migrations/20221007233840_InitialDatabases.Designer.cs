@@ -52,6 +52,16 @@ namespace Ems.Api.Data.Migrations
                             FirstName = "John",
                             LastName = "Doe"
                         });
+                    
+                    b.HasData(
+                        new
+                        {
+                            EmployeeId = 2,
+                            Age = 45,
+                            Email = "example_2@Email.com",
+                            FirstName = "John II",
+                            LastName = "Doe"
+                        });
                 });
 #pragma warning restore 612, 618
         }

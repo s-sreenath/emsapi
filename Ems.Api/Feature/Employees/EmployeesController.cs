@@ -48,6 +48,11 @@ public class EmployeesController : ControllerBase
         var command = new AddEmployeeCommand(employee);
         var response = await this.mediator.Send(command).ConfigureAwait(true);
 
+        if (response.Details.Any(e => e.ErrorCategory == ErrorCategory.Error.ToString()))
+        {
+            return this.BadRequest(response.Details);
+        }
+
         return this.Ok(response);
     }
 }

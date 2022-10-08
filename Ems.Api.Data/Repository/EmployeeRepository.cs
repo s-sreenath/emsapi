@@ -4,21 +4,35 @@
 
 namespace Ems.Api.Data.Repository
 {
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Ems.Api.Data.DTO;
 
     [ExcludeFromCodeCoverage]
     public class EmployeeRepository : IEmployeeRepository
     {
-        public int AddEmployee(EmployeeDto dto)
+        public async Task<EmployeeDto> AddEmployeeAsync(EmployeeDto dto)
         {
             using (var context = new DatabaseContext())
             {
                 context.Add(dto);
-                context.SaveChanges();
+                await context.SaveChangesAsync().ConfigureAwait(true);
             }
 
-            return 0;
+            return dto;
+        }
+
+        public IEnumerable<EmployeeDto> GetAll()
+        {
+            using (var context = new DatabaseContext())
+            {
+                if (context.Employees != null)
+                {
+                    return context.Employees.ToList();
+                }
+
+                return Enumerable.Empty<EmployeeDto>();
+            }
         }
     }
 }
