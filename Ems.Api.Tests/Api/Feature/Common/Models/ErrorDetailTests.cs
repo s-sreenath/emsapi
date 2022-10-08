@@ -7,9 +7,11 @@ namespace Ems.Api.Tests.Api.Feature.Common.Models;
 using Ems.Api.Feature.Common.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ErrorDetailTests
 {
     [TestMethod]

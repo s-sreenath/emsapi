@@ -4,6 +4,7 @@
 
 namespace Ems.Api.Tests.Api.Feature.Employees.Validators;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Ems.Api.Feature.Common.Models;
 using Ems.Api.Feature.Employees.Models;
@@ -12,6 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class EmployeeValidatorTests
 {
     private EmployeeValidator validator;
