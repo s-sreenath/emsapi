@@ -4,6 +4,7 @@
 
 namespace Ems.Api.Feature.Employees;
 
+using Ems.Api.Feature.Common.Extensions;
 using Ems.Api.Feature.Common.Models;
 using Ems.Api.Feature.Employees.Commands;
 using Ems.Api.Feature.Employees.Models;
@@ -19,13 +20,16 @@ using System.Threading.Tasks;
 [ApiController]
 public class EmployeesController : ControllerBase
 {
+    private readonly ILogger<EmployeesController> logger;
     private readonly IEmployeeValidator employeeValidator;
     private readonly IMediator mediator;
 
     public EmployeesController(
+        ILogger<EmployeesController> logger,
         IEmployeeValidator addEmployeeValidator,
         IMediator mediator)
     {
+        this.logger = logger;
         this.employeeValidator = addEmployeeValidator;
         this.mediator = mediator;
     }
@@ -38,6 +42,8 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<AddEmployeeResponse>> AddEmployeeAsync([FromBody]Employee employee)
     {
+        this.logger.LogInformation($"{nameof(this.AddEmployeeAsync)} is called with {nameof(Employee)} - {employee.ToJson<Employee>()}");
+
         this.employeeValidator.Validate(employee);
 
         if (!this.employeeValidator.IsValid)
@@ -65,6 +71,8 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult<EmployeeInquiryResponse>> GetEmployee([FromRoute]int employeeId)
     {
+        this.logger.LogInformation($"{nameof(this.GetEmployee)} is called with {nameof(employeeId)} - {employeeId}");
+
         if (employeeId <= 0)
         {
             return this.NotFound();
@@ -91,6 +99,8 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.InternalServerError)]
     public async Task<ActionResult> ModifyEmployee([FromRoute]int employeeId, [FromBody]Employee employee)
     {
+        this.logger.LogInformation($"{nameof(this.ModifyEmployee)} is called with {nameof(employeeId)} - {employeeId}, {nameof(employee)} - {employee.ToJson<Employee>()}");
+
         if (employeeId <= 0)
         {
             return this.NotFound();
@@ -125,6 +135,8 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<ActionResult> DeleteEmployee(int employeeId)
     {
+        this.logger.LogInformation($"{nameof(this.DeleteEmployee)} is called with {nameof(employeeId)} - {employeeId}");
+
         if (employeeId <= 0)
         {
             return this.NotFound();

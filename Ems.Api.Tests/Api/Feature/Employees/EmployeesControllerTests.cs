@@ -13,6 +13,8 @@ using Ems.Api.Feature.Employees.Validators.Interfaces;
 using FakeItEasy;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System.Collections.Generic;
@@ -24,6 +26,7 @@ using System.Threading.Tasks;
 [ExcludeFromCodeCoverage]
 public class EmployeesControllerTests
 {
+    private ILogger<EmployeesController> logger;
     private IEmployeeValidator employeeValidator;
     private IMediator mediator;
     private EmployeesController controller;
@@ -31,10 +34,12 @@ public class EmployeesControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
+        this.logger = new NullLogger<EmployeesController>();
         this.employeeValidator = A.Fake<IEmployeeValidator>();
         this.mediator = A.Fake<IMediator>();
 
         this.controller = new EmployeesController(
+            this.logger,
             this.employeeValidator,
             this.mediator);
     }
