@@ -14,6 +14,8 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     using Ems.Api.Feature.Employees.Models.Response;
     using FakeItEasy;
     using MediatR;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Shouldly;
 
@@ -21,14 +23,17 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     [ExcludeFromCodeCoverage]
     public class EmployeeInquiryQueryHandlerTests
     {
+        private ILogger<EmployeeInquiryQueryHandler> logger;
         private IEmployeeRepository repository;
         private EmployeeInquiryQueryHandler handler;
 
         [TestInitialize]
         public void TestInitialize()
         {
+            this.logger = new NullLogger<EmployeeInquiryQueryHandler>();
             this.repository = A.Fake<IEmployeeRepository>();
             this.handler = new EmployeeInquiryQueryHandler(
+                this.logger,
                 this.repository);
         }
 

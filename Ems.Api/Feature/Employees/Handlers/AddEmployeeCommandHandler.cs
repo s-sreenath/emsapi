@@ -8,6 +8,7 @@ namespace Ems.Api.Feature.Employees.Handlers
     using System.Threading.Tasks;
     using Ems.Api.Data.DTO;
     using Ems.Api.Data.Repository;
+    using Ems.Api.Feature.Common.Extensions;
     using Ems.Api.Feature.Common.Models;
     using Ems.Api.Feature.Employees.Commands;
     using Ems.Api.Feature.Employees.Models.Response;
@@ -15,15 +16,21 @@ namespace Ems.Api.Feature.Employees.Handlers
 
     public class AddEmployeeCommandHandler : IRequestHandler<AddEmployeeCommand, AddEmployeeResponse>
     {
-        private IEmployeeRepository repository;
+        private readonly ILogger<AddEmployeeCommandHandler> logger;
+        private readonly IEmployeeRepository repository;
 
-        public AddEmployeeCommandHandler(IEmployeeRepository repository)
+        public AddEmployeeCommandHandler(
+            ILogger<AddEmployeeCommandHandler> logger,
+            IEmployeeRepository repository)
         {
+            this.logger = logger;
             this.repository = repository;
         }
 
         public async Task<AddEmployeeResponse> Handle(AddEmployeeCommand request, CancellationToken cancellationToken)
         {
+            this.logger.LogInformation($"{nameof(this.Handle)} is called with {nameof(request)} - {request.ToJson<AddEmployeeCommand>()}");
+
             var response = new AddEmployeeResponse();
 
             var employees = this.repository.GetAll();

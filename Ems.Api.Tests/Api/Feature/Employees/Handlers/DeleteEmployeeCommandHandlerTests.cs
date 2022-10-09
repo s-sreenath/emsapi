@@ -13,6 +13,8 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     using Ems.Api.Feature.Employees.Models.Response;
     using FakeItEasy;
     using MediatR;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Shouldly;
 
@@ -20,14 +22,18 @@ namespace Ems.Api.Tests.Api.Feature.Employees.Handlers
     [ExcludeFromCodeCoverage]
     public class DeleteEmployeeCommandHandlerTests
     {
+        private ILogger<DeleteEmployeeCommandHandler> logger;
         private IEmployeeRepository repository;
         private DeleteEmployeeCommandHandler handler;
 
         [TestInitialize]
         public void TestInitialize()
         {
+            this.logger = new NullLogger<DeleteEmployeeCommandHandler>();
             this.repository = A.Fake<IEmployeeRepository>();
-            this.handler = new DeleteEmployeeCommandHandler(this.repository);
+            this.handler = new DeleteEmployeeCommandHandler(
+                this.logger,
+                this.repository);
         }
 
         [TestMethod]

@@ -15,10 +15,14 @@ namespace Ems.Api.Feature.Employees.Handlers
 
     public class ModifyEmployeeCommandHandler : IRequestHandler<ModifyEmployeeCommand, ModifyEmployeeResponse>
     {
-        private IEmployeeRepository repository;
+        private readonly ILogger<ModifyEmployeeCommandHandler> logger;
+        private readonly IEmployeeRepository repository;
 
-        public ModifyEmployeeCommandHandler(IEmployeeRepository repository)
+        public ModifyEmployeeCommandHandler(
+            ILogger<ModifyEmployeeCommandHandler> logger,
+            IEmployeeRepository repository)
         {
+            this.logger = logger;
             this.repository = repository;
         }
 
