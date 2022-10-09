@@ -23,15 +23,18 @@ public class EmployeesController : ControllerBase
     private readonly ILogger<EmployeesController> logger;
     private readonly IEmployeeValidator employeeValidator;
     private readonly IMediator mediator;
+    private readonly IEmployeeSearchValidator searchValidator;
 
     public EmployeesController(
         ILogger<EmployeesController> logger,
         IEmployeeValidator addEmployeeValidator,
-        IMediator mediator)
+        IMediator mediator,
+        IEmployeeSearchValidator searchValidator)
     {
         this.logger = logger;
         this.employeeValidator = addEmployeeValidator;
         this.mediator = mediator;
+        this.searchValidator = searchValidator;
     }
 
     [HttpPost]
@@ -135,8 +138,6 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<ActionResult> DeleteEmployee(int employeeId)
     {
-        this.logger.LogInformation($"{nameof(this.DeleteEmployee)} is called with {nameof(employeeId)} - {employeeId}");
-
         if (employeeId <= 0)
         {
             return this.NotFound();
@@ -146,5 +147,26 @@ public class EmployeesController : ControllerBase
         await this.mediator.Send(command).ConfigureAwait(true);
 
         return this.NoContent();
+    }
+
+    [HttpPost]
+    [Route("searches")]
+    [ProducesResponseType(typeof(List<ErrorDetail>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(EmployeeSearchResponse), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<EmployeeSearchResponse>> SearchEmployee([FromBody]EmployeeSearchRequest request)
+    {
+        this.logger.LogInformation($"{nameof(this.SearchEmployee)} is called with {nameof(request)} - {request.ToJson()}");
+
+        this.searchValidator.Validate(request);
+
+        if (!this.searchValidator.IsValid)
+        {
+            return this.BadRequest(this.searchValidator.Errors);
+        }
+
+        var command = new EmployeeSearchCommand(request);
+        var response = await this.mediator.Send(command).ConfigureAwait(true);
+
+        return this.Ok(response);
     }
 }

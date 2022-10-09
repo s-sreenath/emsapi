@@ -50,5 +50,10 @@ namespace Ems.Api.Feature.Common.Models
         /// Employee Already exists
         /// </summary>
         EmployeeAlreadyExists = 1008,
+
+        /// <summary>
+        /// Employee Search At Least One Search Parameter Is Required
+        /// </summary>
+        EmployeeSearchAtLeastOneSearchParameterIsRequired = 1009,
     }
 }

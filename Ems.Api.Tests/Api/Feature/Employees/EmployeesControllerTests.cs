@@ -30,6 +30,7 @@ public class EmployeesControllerTests
     private IEmployeeValidator employeeValidator;
     private IMediator mediator;
     private EmployeesController controller;
+    private IEmployeeSearchValidator searchValidator;
 
     [TestInitialize]
     public void TestInitialize()
@@ -37,11 +38,13 @@ public class EmployeesControllerTests
         this.logger = new NullLogger<EmployeesController>();
         this.employeeValidator = A.Fake<IEmployeeValidator>();
         this.mediator = A.Fake<IMediator>();
+        this.searchValidator = A.Fake<IEmployeeSearchValidator>();
 
         this.controller = new EmployeesController(
             this.logger,
             this.employeeValidator,
-            this.mediator);
+            this.mediator,
+            this.searchValidator);
     }
 
     [TestMethod]
@@ -404,5 +407,75 @@ public class EmployeesControllerTests
         result.ShouldNotBeNull();
         notFoundResult.ShouldNotBeNull();
         A.CallTo(() => this.mediator.Send(A<DeleteEmployeeCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task SearchEmployee_Should_Return_BadRequest_When_Validator_Returns_An_Error()
+    {
+        // Arrange
+        var request = new EmployeeSearchRequest();
+
+        List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
+        {
+            new ErrorDetail()
+            {
+                ErrorCode = "ErrorCode",
+                ElementValue = "ElementValue",
+                ErrorCategory = "ErrorCategory",
+                ErrorDescription = "ErrorDescription",
+                ErrorElement = "ErrorElement",
+            },
+        };
+
+        A.CallTo(() => this.searchValidator.IsValid).Returns(false);
+        A.CallTo(() => this.searchValidator.Errors).Returns(expectedErrorList);
+
+        // Act
+        var result = await this.controller.SearchEmployee(request);
+        var badRequestObject = result.Result as BadRequestObjectResult;
+        var errorList = badRequestObject?.Value as List<ErrorDetail>;
+
+        // Assert
+        result.ShouldNotBeNull();
+        badRequestObject.ShouldNotBeNull();
+        errorList.ShouldNotBeNull();
+        errorList.Count.ShouldBeGreaterThan(0);
+        A.CallTo(() => this.mediator.Send(A<EmployeeSearchCommand>._, CancellationToken.None)).MustNotHaveHappened();
+    }
+
+    [TestMethod]
+    public async Task SearchEmployee_Should_Return_Call_Handler_When_Request_Is_Valid()
+    {
+        // Arrange
+        var request = new EmployeeSearchRequest();
+
+        List<ErrorDetail> expectedErrorList = new List<ErrorDetail>()
+        {
+            new ErrorDetail()
+            {
+                ErrorCode = "ErrorCode",
+                ElementValue = "ElementValue",
+                ErrorCategory = "ErrorCategory",
+                ErrorDescription = "ErrorDescription",
+                ErrorElement = "ErrorElement",
+            },
+        };
+
+        var response = new EmployeeSearchResponse();
+        response.Employees.Add(new Employee());
+
+        A.CallTo(() => this.mediator.Send(A<EmployeeSearchCommand>._, CancellationToken.None)).Returns(response);
+        A.CallTo(() => this.searchValidator.IsValid).Returns(true);
+
+        // Act
+        var result = await this.controller.SearchEmployee(request);
+        var okObjectResult = result.Result as OkObjectResult;
+        var searchResult = okObjectResult?.Value as EmployeeSearchResponse;
+
+        // Assert
+        result.ShouldNotBeNull();
+        okObjectResult.ShouldNotBeNull();
+        searchResult.ShouldNotBeNull();
+        searchResult.Employees.Count.ShouldBeGreaterThan(0);
     }
 }

@@ -24,6 +24,7 @@ internal class Program
         var dbContext = new DatabaseContext();
 
         builder.Services.AddTransient<IEmployeeValidator, EmployeeValidator>();
+        builder.Services.AddTransient<IEmployeeSearchValidator, EmployeeSearchValidator>();
         builder.Services.AddScoped<DatabaseContext>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
@@ -39,8 +40,6 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        /*app.UseHttpsRedirection();*/
 
         app.UseAuthorization();
 

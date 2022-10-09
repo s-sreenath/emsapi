@@ -130,6 +130,33 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Search Employee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"FirstName\": \"string\",\r\n  \"LastName\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{col-base-url}}v1/employees/searches",
+					"host": [
+						"{{col-base-url}}v1"
+					],
+					"path": [
+						"employees",
+						"searches"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
